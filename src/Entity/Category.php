@@ -8,8 +8,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Dto\CategoryDto;
 
 /**
  * Class Category
@@ -17,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="category")
  * @ApiResource(
+ *     input=CategoryDto::class,
+ *     output=CategoryDto::class,
  *     collectionOperations={
  *      "get",
  *      "post"={"security"="is_granted('ROLE_ADMIN')"}
@@ -46,14 +48,6 @@ class Category
 
     /** @ORM\Column(name="deleted_at", type="datetime", nullable=true) */
     private $deletedAt;
-
-    /** @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="categories") */
-    private $articles;
-
-    public function __construct()
-    {
-        $this->articles = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -98,27 +92,5 @@ class Category
     public function setDeletedAt(DateTime $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return Article[]
-     */
-    public function getArticles()
-    {
-        return $this->articles;
-    }
-
-    /**
-     * @param Article[] $articles
-     */
-    public function setArticles($articles): void
-    {
-        $this->articles = $articles;
-    }
-
-    public function addArticle(Article $article): void
-    {
-        $article->addCategory($this);
-        $this->articles[] = $article;
     }
 }

@@ -10,11 +10,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Dto\ArticleDto;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="article")
  * @ApiResource(
+ *     input=ArticleDto::class,
+ *     output=ArticleDto::class,
  *     collectionOperations={
  *      "get",
  *      "post"={"security"="is_granted('ROLE_ADMIN')"}
@@ -48,7 +51,14 @@ class Article
     /** @ORM\Column(type="datetime", nullable=true) */
     private $deletedAt;
 
-    /** @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="articles") @ORM\JoinTable(name="article_category") */
+    /**
+     * @ORM\ManyToMany(targetEntity="Category")
+     * @ORM\JoinTable(
+     *     name="article_category",
+     *     joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
+     * )
+     */
     private $categories;
 
     public function __construct()
