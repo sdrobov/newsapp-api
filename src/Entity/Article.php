@@ -4,7 +4,9 @@
 namespace App\Entity;
 
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +14,19 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="article")
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get",
+ *      "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     itemOperations={
+ *      "get",
+ *      "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *      "put"={"security"="is_granted('ROLE_ADMIN')"},
+ *      "patch"={"security"="is_granted('ROLE_ADMIN')"}
+ *     }
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"title": "partial", "text": "partial", "categories": "exact"})
  */
 class Article
 {
@@ -95,5 +109,26 @@ class Article
     public function setDeletedAt(DateTime $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return Category[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Category[] $categories
+     */
+    public function setCategories($categories): void
+    {
+        $this->categories = $categories;
+    }
+
+    public function addCategory(Category $category): void
+    {
+        $this->categories = $category;
     }
 }
