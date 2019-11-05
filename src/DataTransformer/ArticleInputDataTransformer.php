@@ -7,20 +7,12 @@ namespace App\DataTransformer;
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use ApiPlatform\Core\Serializer\AbstractItemNormalizer;
 use App\Entity\Article;
-use App\Entity\Dto\ArticleDto;
-use App\Repository\CategoryRepository;
+use App\Entity\Dto\ArticleInDto;
 
 final class ArticleInputDataTransformer implements DataTransformerInterface
 {
-    private $categoryRepository;
-
-    public function __construct(CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
     /**
-     * @param ArticleDto $object
+     * @param ArticleInDto $object
      * @param string $to
      * @param array $context
      * @return object|void
@@ -32,21 +24,11 @@ final class ArticleInputDataTransformer implements DataTransformerInterface
         $article->setTitle($object->title);
         $article->setText($object->text);
 
-        foreach ($object->categories as $categoryId) {
-            if ($category = $this->categoryRepository->find($categoryId)) {
-                $article->addCategory($category);
-            }
-        }
-
         return $article;
     }
 
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
-        if ($data instanceof Article) {
-            return false;
-        }
-
-        return $to === ArticleDto::class;
+        return $to === Article::class && $data instanceof ArticleInDto;
     }
 }

@@ -4,7 +4,7 @@
 namespace App\Entity\Dto;
 
 
-final class ArticleDto
+final class ArticleInDto
 {
     /** @var int */
     public $id;
@@ -14,7 +14,4 @@ final class ArticleDto
 
     /** @var string */
     public $text;
-
-    /** @var int[] */
-    public $categories;
 }

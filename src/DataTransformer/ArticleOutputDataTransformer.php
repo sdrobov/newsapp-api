@@ -6,7 +6,8 @@ namespace App\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use App\Entity\Article;
-use App\Entity\Dto\ArticleDto;
+use App\Entity\Dto\ArticleInDto;
+use App\Entity\Dto\ArticleOutDto;
 
 final class ArticleOutputDataTransformer implements DataTransformerInterface
 {
@@ -18,13 +19,14 @@ final class ArticleOutputDataTransformer implements DataTransformerInterface
      */
     public function transform($object, string $to, array $context = [])
     {
-        $article = new ArticleDto();
+        $article = new ArticleOutDto();
         $article->id = $object->getId();
         $article->title = $object->getTitle();
         $article->text = $object->getText();
+        $article->createdAt = $object->getCreatedAt()->format('Y-m-d H:i:s');
         $article->categories = [];
         foreach ($object->getCategories() as $category) {
-            $article->categories[] = $category->getId();
+            $article->categories[] = $category->getName();
         }
 
         return $article;
@@ -32,10 +34,6 @@ final class ArticleOutputDataTransformer implements DataTransformerInterface
 
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
-        if ($data instanceof ArticleDto) {
-            return false;
-        }
-
-        return $to === Article::class;
+        return $to === ArticleOutDto::class && $data instanceof Article;
     }
 }

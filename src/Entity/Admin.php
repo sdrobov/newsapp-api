@@ -33,6 +33,12 @@ class Admin implements UserInterface
      */
     private $password;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $token;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +98,16 @@ class Admin implements UserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): void
+    {
+        $this->token = $token;
     }
 
     /**

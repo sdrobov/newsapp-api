@@ -27,10 +27,6 @@ final class CategoryOutputDataTransformer implements DataTransformerInterface
 
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
-        if ($data instanceof CategoryDto) {
-            return false;
-        }
-
-        return $to === Category::class;
+        return $to === CategoryDto::class && $data instanceof Category;
     }
 }

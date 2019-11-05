@@ -10,14 +10,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Dto\ArticleDto;
+use App\Entity\Dto\ArticleInDto;
+use App\Entity\Dto\ArticleOutDto;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="article")
  * @ApiResource(
- *     input=ArticleDto::class,
- *     output=ArticleDto::class,
+ *     input=ArticleInDto::class,
+ *     output=ArticleOutDto::class,
  *     collectionOperations={
  *      "get",
  *      "post"={"security"="is_granted('ROLE_ADMIN')"}
@@ -29,7 +30,7 @@ use App\Entity\Dto\ArticleDto;
  *      "patch"={"security"="is_granted('ROLE_ADMIN')"}
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"title": "partial", "text": "partial", "categories": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"title": "partial", "text": "partial", "categories.name": "exact"})
  */
 class Article
 {
@@ -64,6 +65,7 @@ class Article
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int

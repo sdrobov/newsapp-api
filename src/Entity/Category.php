@@ -49,6 +49,11 @@ class Category
     /** @ORM\Column(name="deleted_at", type="datetime", nullable=true) */
     private $deletedAt;
 
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
